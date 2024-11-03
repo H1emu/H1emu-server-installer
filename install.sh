@@ -1,0 +1,100 @@
+#!/bin/bash
+
+if (($EUID == 1)); then
+
+  echo "Please use root user or sudo ./install.sh under your non-root account"
+  exit
+else
+  echo "Welcome to the installation script for h1emu-server"
+  echo "Continue at your own risk or use ctl-c to cancel the installation"
+  echo ""
+  echo -n "Do you want to setup your server as a community server ? (Y/n) :"
+  read COMMUNITY_SERVER
+  echo ""
+  if [[ COMMUNITY_SERVER == "y" ]]; then
+    echo "You can request your WORLD_ID on the discord. If you do not know what WORLD_ID is cancel the installation with ctl-c"
+    echo -n "please enter your WORLD_ID : "
+    read WORLD_ID
+  else
+    WORLD_ID = 2
+  fi
+  echo "Running H1emu Server installer"
+  echo "Installing system dependencies"
+  apt update && apt upgrade -y
+  apt install -y nodejs npm git net-tools
+
+  echo "Installing mongodb"
+  sudo apt-get install gnupg curl
+  curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc |
+    sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+      --dearmor
+  echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+  sudo apt-get update
+  sudo apt-get install -y mongodb-org
+  systemctl start mongod
+  systemctl enable mongod
+
+  echo "Installing pm2 via npm"
+  npm i -g pm2
+
+  echo "Installing latest h1z1-server"
+  git clone https://github.com/H1emu/h1z1-server-QuickStart.git
+  cd h1z1-server-QuickStart
+  npm install
+
+  echo "Updating .bashrc"
+  # Add environment variables to ~/.bashrc if not already present
+
+  if COMMUNITY_SERVER != "y" && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
+    echo 'export PRIVATE_SERVER="true"' >>~/.bashrc
+  fi
+
+  if ! grep -q "export WORLD_ID='${WORLD_ID}'" ~/.bashrc; then
+    echo "export WORLD_ID='${WORLD_ID}'" >>~/.bashrc
+  fi
+
+  if ! grep -q 'export LOGINSERVER_IP="127.0.0.1"' ~/.bashrc; then
+    echo 'export LOGINSERVER_IP="127.0.0.1"' >>~/.bashrc
+  fi
+
+  if ! grep -q 'export MONGO_URL="mongodb://localhost:27017/"' ~/.bashrc; then
+    echo 'export MONGO_URL="mongodb://localhost:27017/"' >>~/.bashrc
+  fi
+
+  # Reload ~/.bashrc to apply the changes in the current session
+  source ~/.bashrc
+
+  echo "Environment variables have been added to ~/.bashrc and loaded into the current session."
+
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "****************██╗░░██╗░░███╗░░███████╗███╗░░░███╗██╗░░░██╗**********************************"
+  echo "****************██║░░██║░████║░░██╔════╝████╗░████║██║░░░██║**********************************"
+  echo "****************███████║██╔██║░░█████╗░░██╔████╔██║██║░░░██║**********************************"
+  echo "****************██╔══██║╚═╝██║░░██╔══╝░░██║╚██╔╝██║██║░░░██║**********************************"
+  echo "****************██║░░██║███████╗███████╗██║░╚═╝░██║╚██████╔╝**********************************"
+  echo "****************╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░░░░╚═╝░╚═════╝░**********************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "****************Access your MongoDB with http://SERVERIP:4321/ *******************************"
+  echo "**********************************************************************************************"
+  echo "****************To Connect to server with Game client SERVERIP:1115***************************"
+  echo "**********************************************************************************************"
+  echo "****************Use (pm2 kill) to stop server*************************************************"
+  echo "**********************************************************************************************"
+  echo "****************Use (pm2 log) to monitor******************************************************"
+  echo "**********************************************************************************************"
+  echo "****************Use (./start.sh) to start server**********************************************"
+  echo "**********************************************************************************************"
+  echo "****************Your H1emu Server is now installed *******************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+  echo "**********************************************************************************************"
+fi
