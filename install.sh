@@ -62,7 +62,7 @@ else
     echo "export WORLD_ID='${WORLD_ID}'" >>~/.bashrc
   fi
 
-  if ! grep -q 'export LOGINSERVER_IP="127.0.0.1"' ~/.bashrc; then
+  if [ "$COMMUNITY_SERVER" != "y"] && ! grep -q 'export LOGINSERVER_IP="127.0.0.1"' ~/.bashrc; then
     echo 'export LOGINSERVER_IP="127.0.0.1"' >>~/.bashrc
   fi
 
