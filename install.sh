@@ -54,8 +54,7 @@ else
 
   echo "Updating .bashrc"
   # Add environment variables to ~/.bashrc if not already present
-
-  if $COMMUNITY_SERVER != "y" && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
+  if [ "$COMMUNITY_SERVER" != "y" ] && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
     echo 'export PRIVATE_SERVER="true"' >>~/.bashrc
   fi
 
