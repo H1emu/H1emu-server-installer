@@ -12,7 +12,7 @@ else
   read COMMUNITY_SERVER
   echo COMMUNITY_SERVER
   echo ""
-  if [[ COMMUNITY_SERVER == "y" ]]; then
+  if [[ $COMMUNITY_SERVER == "y" ]]; then
     echo "You can request your WORLD_ID on the discord. If you do not know what WORLD_ID is cancel the installation with ctl-c"
     echo -n "please enter your WORLD_ID : "
     read WORLD_ID
