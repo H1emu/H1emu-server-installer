@@ -20,8 +20,17 @@ else
   fi
   echo "Running H1emu Server installer"
   echo "Installing system dependencies"
-  apt update && apt upgrade -y
-  apt install -y nodejs npm git net-tools
+  apt update
+  apt install -y git net-tools
+
+  echo "Installing nodejs"
+  apt install -y ca-certificates curl gnupg
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+  apt update
+  sudo apt install nodejs -y
 
   echo "Installing mongodb"
   sudo apt-get install gnupg curl
