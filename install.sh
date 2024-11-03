@@ -10,6 +10,7 @@ else
   echo ""
   echo -n "Do you want to setup your server as a community server ? (Y/n) :"
   read COMMUNITY_SERVER
+  echo COMMUNITY_SERVER
   echo ""
   if [[ COMMUNITY_SERVER == "y" ]]; then
     echo "You can request your WORLD_ID on the discord. If you do not know what WORLD_ID is cancel the installation with ctl-c"
@@ -54,7 +55,7 @@ else
   echo "Updating .bashrc"
   # Add environment variables to ~/.bashrc if not already present
 
-  if COMMUNITY_SERVER != "y" && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
+  if $COMMUNITY_SERVER != "y" && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
     echo 'export PRIVATE_SERVER="true"' >>~/.bashrc
   fi
 
@@ -107,3 +108,6 @@ else
   echo "**********************************************************************************************"
   echo "**********************************************************************************************"
 fi
+echo "Your system will now reboot"
+sleep 10
+reboot
