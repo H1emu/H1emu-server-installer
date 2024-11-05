@@ -92,16 +92,13 @@ EOF
 
   echo "Updating .bashrc"
   # Add environment variables to ~/.bashrc if not already present
-  if [ "$COMMUNITY_SERVER" != "y" ] && ! grep -q 'export PRIVATE_SERVER="true"' ~/.bashrc; then
+  if [ "$COMMUNITY_SERVER" != "y" ]; then
     echo 'export PRIVATE_SERVER="true"' >>~/.bashrc
+    echo "export LOGINSERVER_IP='${HOST_IP}'" >>~/.bashrc
   fi
 
   if ! grep -q "export WORLD_ID='${WORLD_ID}'" ~/.bashrc; then
     echo "export WORLD_ID='${WORLD_ID}'" >>~/.bashrc
-  fi
-
-  if [ "$COMMUNITY_SERVER" != "y"] && ! grep -q "export LOGINSERVER_IP='${HOST_IP}'" ~/.bashrc; then
-    echo "export LOGINSERVER_IP='${HOST_IP}'" >>~/.bashrc
   fi
 
   if ! grep -q "export MONGO_URL='${MONGO_URL}'" ~/.bashrc; then
