@@ -43,6 +43,26 @@ else
   sudo apt-get install -y mongodb-org
   systemctl start mongod
   systemctl enable mongod
+  # Allow connections from 0.0.0.0
+  sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+  sudo systemctl restart mongod
+
+  # Define new user credentials and database
+  USERNAME="admin"
+  PASSWORD=$(openssl rand -base64 12)
+  DB_NAME="h1server" # The database where the new user will be created
+
+  # Create a MongoDB user with readWrite permissions on a specific database
+  mongo <<EOF
+use admin
+
+use $DB_NAME
+db.createUser({
+  user: "$USERNAME",
+  pwd: "$PASSWORD",
+  roles: [{ role: "readWrite", db: "$DB_NAME" }]
+})
+EOF
 
   echo "Installing pm2 via npm"
   npm i -g pm2
@@ -107,6 +127,11 @@ else
   echo "**********************************************************************************************"
   echo "**********************************************************************************************"
 fi
+HOST_IP=$(hostname -I | awk '{print $1}')
+
+echo ""
+echo "Please copy your mongodb access string it won't be gived to you ever again so save it. When saved press ENTER"
+echo -n "mongodb://$USERNAME:$PASSWORD@$HOST_IP:27017/$DB_NAME"
 echo "Your system will now reboot"
 sleep 10
 reboot
