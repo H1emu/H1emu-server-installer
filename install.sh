@@ -105,7 +105,7 @@ EOF
   fi
 
   if ! grep -q "export MONGO_URL='${MONGO_URL}'" ~/.bashrc; then
-    echo 'export MONGO_URL="${MONGO_URL}"' >>~/.bashrc
+    echo "export MONGO_URL='${MONGO_URL}'" >>~/.bashrc
   fi
 
   # Reload ~/.bashrc to apply the changes in the current session
