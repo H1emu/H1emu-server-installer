@@ -45,6 +45,10 @@ else
   systemctl enable mongod
 
   # Create a MongoDB user with readWrite permissions on a specific database
+  USERNAME="admin"
+  PASSWORD=$(openssl rand -base64 12 | tr -dc 'a-zA-Z' | head -c 16)
+  DB_NAME="h1server" # The database where the new user will be created
+  HOST_IP=$(hostname -I | awk '{print $1}')
   mongosh <<EOF
 use admin
 
@@ -75,10 +79,6 @@ EOF
   sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' "$MONGO_CONF"
 
   # Define new user credentials and database
-  USERNAME="admin"
-  PASSWORD=$(openssl rand -base64 12 | tr -dc 'a-zA-Z' | head -c 16)
-  DB_NAME="h1server" # The database where the new user will be created
-  HOST_IP=$(hostname -I | awk '{print $1}')
 
   MONGO_URL="mongodb://$USERNAME:$PASSWORD@$HOST_IP:27017/$DB_NAME"
 
