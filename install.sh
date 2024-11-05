@@ -17,7 +17,7 @@ else
     echo -n "please enter your WORLD_ID : "
     read WORLD_ID
   else
-    WORLD_ID = 2
+    WORLD_ID=2
   fi
   echo "Running H1emu Server installer"
   echo "Installing system dependencies"
@@ -100,8 +100,8 @@ EOF
     echo "export WORLD_ID='${WORLD_ID}'" >>~/.bashrc
   fi
 
-  if [ "$COMMUNITY_SERVER" != "y"] && ! grep -q 'export LOGINSERVER_IP="127.0.0.1"' ~/.bashrc; then
-    echo 'export LOGINSERVER_IP="127.0.0.1"' >>~/.bashrc
+  if [ "$COMMUNITY_SERVER" != "y"] && ! grep -q "export LOGINSERVER_IP='${HOST_IP}'" ~/.bashrc; then
+    echo "export LOGINSERVER_IP='${HOST_IP}'" >>~/.bashrc
   fi
 
   if ! grep -q "export MONGO_URL='${MONGO_URL}'" ~/.bashrc; then
