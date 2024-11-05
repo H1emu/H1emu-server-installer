@@ -43,6 +43,19 @@ else
   sudo apt-get install -y mongodb-org
   systemctl start mongod
   systemctl enable mongod
+
+  # Create a MongoDB user with readWrite permissions on a specific database
+  mongosh <<EOF
+use admin
+
+use $DB_NAME
+db.createUser({
+  user: "$USERNAME",
+  pwd: "$PASSWORD",
+  roles: [{ role: "readWrite", db: "$DB_NAME" }]
+})
+EOF
+
   # Path to MongoDB configuration file
   MONGO_CONF="/etc/mongod.conf"
 
@@ -59,24 +72,12 @@ else
     echo "Authentication enabled."
   fi
   # Allow connections from 0.0.0.0
-  sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+  sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' "$MONGO_CONF"
 
   # Define new user credentials and database
   USERNAME="admin"
   PASSWORD=$(openssl rand -base64 12 | tr -dc 'a-zA-Z' | head -c 16)
   DB_NAME="h1server" # The database where the new user will be created
-
-  # Create a MongoDB user with readWrite permissions on a specific database
-  mongosh <<EOF
-use admin
-
-use $DB_NAME
-db.createUser({
-  user: "$USERNAME",
-  pwd: "$PASSWORD",
-  roles: [{ role: "readWrite", db: "$DB_NAME" }]
-})
-EOF
   HOST_IP=$(hostname -I | awk '{print $1}')
 
   MONGO_URL="mongodb://$USERNAME:$PASSWORD@$HOST_IP:27017/$DB_NAME"
@@ -147,7 +148,7 @@ fi
 
 echo ""
 echo "Please copy your mongodb access string it won't be gived to you ever again so save it. When saved press ENTER"
-echo -n MONGO_URL
+echo -n $MONGO_URL
 read NOTHING
 echo "Your system will now reboot"
 sleep 10
