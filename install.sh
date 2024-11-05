@@ -8,12 +8,12 @@ else
   echo "Welcome to the installation script for h1emu-server"
   echo "Continue at your own risk or use ctl-c to cancel the installation"
   echo ""
-  echo -n "Do you want to setup your server as a community server ? (Y/n) :"
+  echo -n "Do you want to setup your server as a community server ? (y/N) :"
   read COMMUNITY_SERVER
   echo COMMUNITY_SERVER
   echo ""
   if [[ $COMMUNITY_SERVER == "y" ]]; then
-    echo "You can request your WORLD_ID on the discord. If you do not know what WORLD_ID is cancel the installation with ctl-c"
+    echo "You can request your WORLD_ID on the discord. If you do not know what WORLD_ID is cancel the installation with ctrl-c"
     echo -n "please enter your WORLD_ID : "
     read WORLD_ID
   else
