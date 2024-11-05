@@ -77,6 +77,9 @@ db.createUser({
   roles: [{ role: "readWrite", db: "$DB_NAME" }]
 })
 EOF
+  HOST_IP=$(hostname -I | awk '{print $1}')
+
+  MONGO_URL="mongodb://$USERNAME:$PASSWORD@$HOST_IP:27017/$DB_NAME"
 
   echo "Installing pm2 via npm"
   npm i -g pm2
@@ -100,8 +103,8 @@ EOF
     echo 'export LOGINSERVER_IP="127.0.0.1"' >>~/.bashrc
   fi
 
-  if ! grep -q 'export MONGO_URL="mongodb://localhost:27017/"' ~/.bashrc; then
-    echo 'export MONGO_URL="mongodb://localhost:27017/"' >>~/.bashrc
+  if ! grep -q "export MONGO_URL='${MONGO_URL}'" ~/.bashrc; then
+    echo 'export MONGO_URL="${MONGO_URL}"' >>~/.bashrc
   fi
 
   # Reload ~/.bashrc to apply the changes in the current session
@@ -141,11 +144,10 @@ EOF
   echo "**********************************************************************************************"
   echo "**********************************************************************************************"
 fi
-HOST_IP=$(hostname -I | awk '{print $1}')
 
 echo ""
 echo "Please copy your mongodb access string it won't be gived to you ever again so save it. When saved press ENTER"
-echo -n "mongodb://$USERNAME:$PASSWORD@$HOST_IP:27017/$DB_NAME"
+echo -n MONGO_URL
 read NOTHING
 echo "Your system will now reboot"
 sleep 10
