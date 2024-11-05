@@ -150,6 +150,6 @@ echo ""
 echo "Please copy your mongodb access string it won't be gived to you ever again so save it. When saved press ENTER"
 echo -n $MONGO_URL
 read NOTHING
-echo "Your system will now reboot"
+echo "Your system will now reboot, come back and execute ./start.sh to make your server running."
 sleep 10
 reboot
