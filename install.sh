@@ -43,6 +43,21 @@ else
   sudo apt-get install -y mongodb-org
   systemctl start mongod
   systemctl enable mongod
+  # Path to MongoDB configuration file
+  MONGO_CONF="/etc/mongod.conf"
+
+  # Check if authentication is already enabled
+  if grep -q "authorization: enabled" "$MONGO_CONF"; then
+    echo "Authentication is already enabled in MongoDB configuration."
+  else
+    # Add authorization configuration to the MongoDB config file
+    echo "Enabling authentication in MongoDB configuration..."
+
+    # Use 'sudo' if necessary to edit configuration file
+    sudo sed -i '/#security:/a\security:\n  authorization: enabled' "$MONGO_CONF"
+
+    echo "Authentication enabled."
+  fi
   # Allow connections from 0.0.0.0
   sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
 
